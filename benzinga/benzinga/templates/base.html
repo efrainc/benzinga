@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static "css/benzinga.css" %}" />
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+</script>
+
+<form method="POST" action='.'>
+    {% csrf_token %}
+    <div id='symbol'>
+    <input type="text" name=symbol placeholder='Symbol'>
+    <input type="submit" value="Search">
+    </div>
+</form>
+
+<p>Your Balance: {{current_value}}</p>
+<p>prices for stock: {{symbol}}</p>
+
+{% if askprice %}
+<table style="width:100%">
+  <tr>
+    <th>Bid</th>
+    <th>Ask</th>
+  </tr>
+  <tr>
+    <td>{{bidprice}}</td>
+    <td>{{askprice}}</td>
+  </tr>
+</table>
+{% endif %}
+
+<h3>Your Portfolio</h3>
+<table style="width:100%">
+  <tr>
+    <th>Symbol</th>
+    <th>Shares</th>
+    <th>Cost</th>
+  </tr>
+  {% for item in purchased %}
+  <tr>
+    <td>{{item.0}}</td>
+    <td>{{item.1}}</td>
+    <td>{{item.2}}</td>
+  </tr>
+    {% endfor %}
+</table>
+
+
+</html>
