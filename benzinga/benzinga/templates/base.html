@@ -6,8 +6,29 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
 </script>
-
-<form method="POST" action='.'>
+<script type="text/javascript">
+function validateForm() {
+    var x = document.forms["purchase"]["quantity"].value;
+    var y = document.getElementById("bidprice").innerHTML;
+    var z = document.getElementById("cv").innerHTML;
+    var total = x * y;
+    if (  total > z ) {
+        alert("Insufficent funds");
+        return false;
+    }
+}
+function validateForm2() {
+    var x = document.forms["sell"]["quantity"].value;
+    console.log(x)
+    var y = document.getElementById("owned_quant").innerHTML;
+    console.log(y)
+    if (  x > y ) {
+        alert("Insufficent Shares");
+        return false;
+    }
+}
+</script>
+<form id='form1' method="POST" action='.'>
     {% csrf_token %}
     <div id='symbol'>
     <input type="text" name=symbol placeholder='Symbol'>
@@ -15,20 +36,30 @@
     </div>
 </form>
 
-<p>Your Balance: {{current_value}}</p>
-<p>prices for stock: {{symbol}}</p>
+<p>Your Balance</p>
+<p id='cv'>{{current_value}}</p>
+
 
 {% if askprice %}
+<p>prices for stock: {{symbol}}</p>
 <table style="width:100%">
   <tr>
     <th>Bid</th>
     <th>Ask</th>
   </tr>
   <tr>
-    <td>{{bidprice}}</td>
+    <td id='bidprice'>{{bidprice}}</td>
     <td>{{askprice}}</td>
   </tr>
 </table>
+<form name='purchase' method="POST" action='transaction/' onsubmit="return validateForm()">
+    {% csrf_token %}
+    <div id='buyorsell'>
+    <input type="text" name=quantity placeholder='Quantity'>
+    <input type="submit" name=buy value="buy">
+    </div>
+</form>
+
 {% endif %}
 
 <h3>Your Portfolio</h3>
@@ -37,12 +68,21 @@
     <th>Symbol</th>
     <th>Shares</th>
     <th>Cost</th>
+    <th>Sell Shares</th>
   </tr>
   {% for item in purchased %}
   <tr>
     <td>{{item.0}}</td>
-    <td>{{item.1}}</td>
+    <td id='owned_quant'>{{item.1}}</td>
     <td>{{item.2}}</td>
+    <td>
+    <form name='sell' method="POST" action='sell/' onsubmit="return validateForm2()">
+    {% csrf_token %}
+    <input  type="text" name=quantity placeholder='Quantity'>
+    <input type="hidden" name=symbol value={{item.0}}>
+    <input type="submit" name=sell value="Sell">
+    </form>
+    </td>
   </tr>
     {% endfor %}
 </table>

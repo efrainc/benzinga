@@ -6,11 +6,16 @@
     margin:0;
 }
 
-form {
+#form1 {
     width: 100%;
     background-color: grey;
     height: 25px;
     margin-top: 0;
+}
+
+#buyorsell {
+    margin-left: 40%;
+
 }
 
 table, th, td {
